@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
+import Grid from "@/components/Grid";
+import { StyleSheet, View } from "react-native";
 
 export default function Index() {
   return (
     <View style={styles.container}>
-      <Text>Hello world!</Text>
+      <Grid />
     </View>
   );
 }
