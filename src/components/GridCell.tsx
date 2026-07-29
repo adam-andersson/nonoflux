@@ -1,54 +1,60 @@
 import { Colors } from "@/constants/Colors";
-import { Feather } from '@expo/vector-icons';
+import { Feather } from "@expo/vector-icons";
 import { memo } from "react";
 import { Pressable, StyleSheet } from "react-native";
 
 export type CellState = "blank" | "active" | "unactive";
 
-interface GridCellProps {
+export interface GridCellProps {
   id: string;
-  row: number;
-  col: number;
-  gridSize: number;
+  state: CellState;
   cellSize: number;
-  state: CellState,
+  isThickRight: boolean;
+  isThickBottom: boolean;
+  isLastRow: boolean;
+  isLastCol: boolean;
   onSelect: (id: string) => void;
 }
 
-export const GridCell = memo(({ id, row, col, gridSize, cellSize, state, onSelect }: GridCellProps) => {
-  // Sudoku-style thick borders every 5 cells
-  const isThickRight = (col + 1) % 5 === 0 && col < gridSize - 1;
-  const isThickBottom = (row + 1) % 5 === 0 && row < gridSize - 1;
-
-  const isLastRow = row === gridSize - 1;
-  const isLastCol = col === gridSize - 1;
-  
-  const handlePress = () => {
-    if (state === "blank") {
-      onSelect(id);
-    }
-  };
-
-  return (
-    <Pressable
-      onPress={handlePress}
-      disabled={state !== "blank"}
-      style={() => [
-        styles.cell,
-        isThickRight && styles.thickRight,
-        isThickBottom && styles.thickBottom,
-        isLastRow && styles.noBottomBorder,
-        isLastCol && styles.noRightBorder,
-        state === "active" && styles.activeCell,
-        state === "unactive" && styles.unactiveCell,
-      ]}
-    >
-      {state === "unactive" && (
-        <Feather name="x" size={Math.round(cellSize * 0.75)} color={Colors.borderThick} />
-      )}
-    </Pressable>
-  );
+const CellContent = memo(({ state, size }: { state: CellState; size: number }) => {
+  if (state === "unactive") {
+    return <Feather name="x" size={size} color={Colors.borderThick} />;
+  }
+  return null;
 });
+
+export const GridCell = memo(
+  ({
+    id,
+    state,
+    cellSize,
+    isThickRight,
+    isThickBottom,
+    isLastRow,
+    isLastCol,
+    onSelect,
+  }: GridCellProps) => {
+    const isBlank = state === "blank";
+    const iconSize = Math.round(cellSize * 0.75);
+
+    return (
+      <Pressable
+        onPress={() => onSelect(id)}
+        disabled={!isBlank}
+        style={[
+          styles.cell,
+          isThickRight && styles.thickRight,
+          isThickBottom && styles.thickBottom,
+          isLastRow && styles.noBottomBorder,
+          isLastCol && styles.noRightBorder,
+          state === "active" && styles.activeCell,
+        ]}
+      >
+        <CellContent state={state} size={iconSize} />
+      </Pressable>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   cell: {
@@ -77,8 +83,5 @@ const styles = StyleSheet.create({
   },
   activeCell: {
     backgroundColor: Colors.active,
-  },
-  unactiveCell: {
-    backgroundColor: Colors.surface, 
   },
 });

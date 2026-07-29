@@ -10,9 +10,13 @@ const BOARD_SIZE = SCREEN_WIDTH - 32;
 const CELL_SIZE = BOARD_SIZE / GRID_SIZE;
 
 export interface CellData {
-  id: string; // "row,col"
+  id: string;
   row: number;
   col: number;
+  isThickRight: boolean;
+  isThickBottom: boolean;
+  isLastRow: boolean;
+  isLastCol: boolean;
 }
 
 const ROWS: CellData[][] = Array.from({ length: GRID_SIZE }, (_, row) =>
@@ -20,6 +24,10 @@ const ROWS: CellData[][] = Array.from({ length: GRID_SIZE }, (_, row) =>
     id: `${row},${col}`,
     row,
     col,
+    isThickRight: (col + 1) % 5 === 0 && col < GRID_SIZE - 1,
+    isThickBottom: (row + 1) % 5 === 0 && row < GRID_SIZE - 1,
+    isLastRow: row === GRID_SIZE - 1,
+    isLastCol: col === GRID_SIZE - 1,
   }))
 );
 
@@ -35,7 +43,7 @@ export default function Grid() {
       }
 
       const next = new Map(prev);
-      next.set(id, "unactive");
+      next.set(id, "active");
       return next;
     });
   }, []);
@@ -49,11 +57,12 @@ export default function Grid() {
               <GridCell
                 key={cell.id}
                 id={cell.id}
-                row={cell.row}
-                col={cell.col}
-                gridSize={GRID_SIZE}
-                cellSize={CELL_SIZE}
                 state={cellStates.get(cell.id) ?? "blank"}
+                cellSize={CELL_SIZE}
+                isThickRight={cell.isThickRight}
+                isThickBottom={cell.isThickBottom}
+                isLastRow={cell.isLastRow}
+                isLastCol={cell.isLastCol}
                 onSelect={handleCellPress}
               />
             ))}
