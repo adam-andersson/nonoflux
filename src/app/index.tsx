@@ -35,7 +35,10 @@ export default function GameScreen() {
     });
   }, []);
 
-  const gridDimension = Math.min(width - 32, height * 0.5);
+  const maxNonoDimension = Math.min(
+    width - 32 - insets.left - insets.right,
+    height * 0.55,
+  );
 
   return (
     <View
@@ -49,20 +52,13 @@ export default function GameScreen() {
         },
       ]}
     >
-      <View style={[styles.gridContainer]}>
-        <View
-          style={[
-            styles.gridSquare,
-            { width: gridDimension, height: gridDimension },
-          ]}
-        >
-          <Grid
-            gridSize={GRID_SIZE}
-            gridDimension={gridDimension}
-            cellStates={cellStates}
-            onCellPress={handleCellPress}
-          />
-        </View>
+      <View style={styles.gridContainer}>
+        <Grid
+          gridSize={GRID_SIZE}
+          gridDimension={maxNonoDimension}
+          cellStates={cellStates}
+          onCellPress={handleCellPress}
+        />
       </View>
 
       <View>
@@ -83,8 +79,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  gridSquare: {
-    overflow: "hidden",
   },
 });
