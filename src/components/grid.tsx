@@ -9,60 +9,66 @@ const BLOCK_SIZE = 5;
 
 interface GridProps {
   gridSize: number;
-  cellStates: Map<string, CellState>;
+  cellStates: Record<string, CellState>;
   onCellPress: (id: string) => void;
 }
 
 export function Grid({ gridSize, cellStates, onCellPress }: GridProps) {
   const cellSize = BOARD_SIZE / gridSize;
+  const numBlocks = Math.ceil(gridSize / BLOCK_SIZE);
 
-  const gridRows = useMemo(() => {
+  const gridMatrix = useMemo(() => {
     return Array.from({ length: gridSize }, (_, row) =>
-      Array.from({ length: gridSize }, (_, col) => ({
-        id: `${row},${col}`,
-        row,
-        col,
-        isThickRight: (col + 1) % BLOCK_SIZE === 0 && col < gridSize - 1,
-        isThickBottom: (row + 1) % BLOCK_SIZE === 0 && row < gridSize - 1,
-        isLastRow: row === gridSize - 1,
-        isLastCol: col === gridSize - 1,
-      })),
+      Array.from({ length: gridSize }, (_, col) => `${row},${col}`),
     );
   }, [gridSize]);
 
-  const blockRows = useMemo(() => {
-    return Array.from({ length: Math.ceil(gridSize / BLOCK_SIZE) }, (_, i) =>
-      gridRows.slice(i * BLOCK_SIZE, (i + 1) * BLOCK_SIZE),
-    );
-  }, [gridRows, gridSize]);
+  const blocks = useMemo(() => {
+    const blockArray = [];
+    for (let bRow = 0; bRow < numBlocks; bRow++) {
+      const rowGroup = [];
+      for (let bCol = 0; bCol < numBlocks; bCol++) {
+        const blockCells = [];
+        for (let r = 0; r < BLOCK_SIZE; r++) {
+          const actualRow = bRow * BLOCK_SIZE + r;
+          if (actualRow >= gridSize) break;
+
+          const rowCells = [];
+          for (let c = 0; c < BLOCK_SIZE; c++) {
+            const actualCol = bCol * BLOCK_SIZE + c;
+            if (actualCol >= gridSize) break;
+            rowCells.push(gridMatrix[actualRow][actualCol]);
+          }
+          blockCells.push(rowCells);
+        }
+        rowGroup.push(blockCells);
+      }
+      blockArray.push(rowGroup);
+    }
+    return blockArray;
+  }, [gridMatrix, gridSize, numBlocks]);
 
   return (
     <View style={[styles.board, { width: BOARD_SIZE, height: BOARD_SIZE }]}>
-      {blockRows.map((blockRowGroup, blockRowIndex) => (
-        <View key={`block-row-${blockRowIndex}`} style={styles.blockRowBand}>
-          {blockRows.map((_, blockColIndex) => {
-            const colStart = blockColIndex * BLOCK_SIZE;
-            return (
-              <View
-                key={`block-${blockRowIndex}-${blockColIndex}`}
-                style={styles.block}
-              >
-                {blockRowGroup.map((row, rowIndex) => (
-                  <View key={`row-${rowIndex}`} style={styles.row}>
-                    {row.slice(colStart, colStart + BLOCK_SIZE).map((cell) => (
-                      <GridCell
-                        key={cell.id}
-                        id={cell.id}
-                        state={cellStates.get(cell.id) ?? "blank"}
-                        cellSize={cellSize}
-                        onSelect={onCellPress}
-                      />
-                    ))}
-                  </View>
-                ))}
-              </View>
-            );
-          })}
+      {blocks.map((blockRow, bRowIdx) => (
+        <View key={`block-row-${bRowIdx}`} style={styles.blockRowBand}>
+          {blockRow.map((block, bColIdx) => (
+            <View key={`block-${bRowIdx}-${bColIdx}`} style={styles.block}>
+              {block.map((row, rIdx) => (
+                <View key={`row-${rIdx}`} style={styles.row}>
+                  {row.map((cellId) => (
+                    <GridCell
+                      key={cellId}
+                      id={cellId}
+                      state={cellStates[cellId] ?? "blank"}
+                      cellSize={cellSize}
+                      onSelect={onCellPress}
+                    />
+                  ))}
+                </View>
+              ))}
+            </View>
+          ))}
         </View>
       ))}
     </View>

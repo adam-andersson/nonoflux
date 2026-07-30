@@ -2,33 +2,34 @@ import { Grid } from "@/components/grid";
 import { CellState } from "@/components/grid-cell";
 import { InputMode, ModeToggle } from "@/components/mode-toggle";
 import { Colors } from "@/constants/Colors";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 
 const GRID_SIZE = 10;
 
 export default function GameScreen() {
   const [inputMode, setInputMode] = useState<InputMode>("active");
-  const [cellStates, setCellStates] = useState<Map<string, CellState>>(
-    new Map(),
-  );
+  const [cellStates, setCellStates] = useState<Record<string, CellState>>({});
 
-  const handleCellPress = useCallback(
-    (id: string) => {
-      setCellStates((prev) => {
-        const currentState = prev.get(id) ?? "blank";
+  const inputModeRef = useRef(inputMode);
+  useEffect(() => {
+    inputModeRef.current = inputMode;
+  }, [inputMode]);
 
-        if (currentState !== "blank") {
-          return prev;
-        }
+  const handleCellPress = useCallback((id: string) => {
+    setCellStates((prev) => {
+      const currentState = prev[id] ?? "blank";
 
-        const next = new Map(prev);
-        next.set(id, inputMode);
-        return next;
-      });
-    },
-    [inputMode],
-  );
+      if (currentState !== "blank") {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        [id]: inputModeRef.current,
+      };
+    });
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 16, // <-- Restores the 16px padding on left & right
-    paddingVertical: 24, // Adds vertical breathing room for toggle & top area
+    paddingHorizontal: 16,
+    paddingVertical: 24,
   },
 });
