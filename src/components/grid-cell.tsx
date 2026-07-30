@@ -8,18 +8,16 @@ export type CellState = "blank" | "active" | "unactive";
 export interface GridCellProps {
   id: string;
   state: CellState;
-  cellSize: number;
   onSelect: (id: string) => void;
 }
 
 export const GridCell = memo(function GridCell({
   id,
   state,
-  cellSize,
   onSelect,
 }: GridCellProps) {
   const isBlank = state === "blank";
-  const iconSize = Math.round(cellSize * 0.75);
+  const iconSize = Math.round(12 * 0.75);
 
   return (
     <Pressable

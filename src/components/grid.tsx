@@ -1,10 +1,8 @@
 import { CellState, GridCell } from "@/components/grid-cell";
 import { Colors } from "@/constants/Colors";
 import { useMemo } from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
-const SCREEN_WIDTH = Dimensions.get("window").width;
-const BOARD_SIZE = SCREEN_WIDTH - 32;
 const BLOCK_SIZE = 5;
 
 interface GridProps {
@@ -14,7 +12,6 @@ interface GridProps {
 }
 
 export function Grid({ gridSize, cellStates, onCellPress }: GridProps) {
-  const cellSize = BOARD_SIZE / gridSize;
   const numBlocks = Math.ceil(gridSize / BLOCK_SIZE);
 
   const gridMatrix = useMemo(() => {
@@ -49,7 +46,7 @@ export function Grid({ gridSize, cellStates, onCellPress }: GridProps) {
   }, [gridMatrix, gridSize, numBlocks]);
 
   return (
-    <View style={[styles.board, { width: BOARD_SIZE, height: BOARD_SIZE }]}>
+    <View style={[styles.board]}>
       {blocks.map((blockRow, bRowIdx) => (
         <View key={`block-row-${bRowIdx}`} style={styles.blockRowBand}>
           {blockRow.map((block, bColIdx) => (
@@ -61,7 +58,6 @@ export function Grid({ gridSize, cellStates, onCellPress }: GridProps) {
                       key={cellId}
                       id={cellId}
                       state={cellStates[cellId] ?? "blank"}
-                      cellSize={cellSize}
                       onSelect={onCellPress}
                     />
                   ))}

@@ -3,13 +3,17 @@ import { CellState } from "@/components/grid-cell";
 import { InputMode, ModeToggle } from "@/components/mode-toggle";
 import { Colors } from "@/constants/Colors";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const GRID_SIZE = 10;
 
 export default function GameScreen() {
   const [inputMode, setInputMode] = useState<InputMode>("active");
   const [cellStates, setCellStates] = useState<Record<string, CellState>>({});
+
+  const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   const inputModeRef = useRef(inputMode);
   useEffect(() => {
@@ -31,30 +35,55 @@ export default function GameScreen() {
     });
   }, []);
 
+  const gridDimension = Math.min(width - 32, height * 0.5);
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Grid
-          gridSize={GRID_SIZE}
-          cellStates={cellStates}
-          onCellPress={handleCellPress}
-        />
+    <View
+      style={[
+        styles.container,
+        {
+          paddingTop: Math.max(insets.top, 16),
+          paddingBottom: Math.max(insets.bottom, 16),
+          paddingLeft: Math.max(insets.left, 16),
+          paddingRight: Math.max(insets.right, 16),
+        },
+      ]}
+    >
+      <View style={[styles.gridContainer]}>
+        <View
+          style={[
+            styles.gridSquare,
+            { width: gridDimension, height: gridDimension },
+          ]}
+        >
+          <Grid
+            gridSize={GRID_SIZE}
+            cellStates={cellStates}
+            onCellPress={handleCellPress}
+          />
+        </View>
+      </View>
+
+      <View>
         <ModeToggle mode={inputMode} onModeChange={setInputMode} />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: Colors.surface,
   },
-  content: {
+  gridContainer: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 24,
+    alignItems: "center",
+  },
+  gridSquare: {
+    overflow: "hidden",
   },
 });
