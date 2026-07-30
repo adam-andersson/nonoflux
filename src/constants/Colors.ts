@@ -16,10 +16,10 @@ export const Palette = {
 
 export const Colors = {
   // light: {
-    surface: Palette.slate[50],
-    active: Palette.slate[700],
-    border: Palette.slate[400],
-    borderThick: Palette.slate[900]
+  surface: Palette.slate[50],
+  active: Palette.slate[700],
+  border: Palette.slate[400],
+  borderThick: Palette.slate[900],
   // },
   // dark: {
   //   background: Palette.slate[950],

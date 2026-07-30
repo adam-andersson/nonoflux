@@ -12,7 +12,10 @@ interface ModeToggleProps {
   onModeChange: (mode: InputMode) => void;
 }
 
-export const ModeToggle = memo(({ mode, onModeChange }: ModeToggleProps) => {
+export const ModeToggle = memo(function ModeToggle({
+  mode,
+  onModeChange,
+}: ModeToggleProps) {
   const handleSelect = (nextMode: InputMode) => {
     if (mode !== nextMode) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -70,7 +73,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   activeButton: {
-    backgroundColor: Colors.borderThick, 
+    backgroundColor: Colors.borderThick,
   },
   text: {
     fontSize: 14,
@@ -78,7 +81,7 @@ const styles = StyleSheet.create({
     color: Colors.borderThick,
   },
   activeText: {
-    color: Colors.surface, 
+    color: Colors.surface,
   },
   fillIcon: {
     width: 14,

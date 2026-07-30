@@ -9,21 +9,26 @@ const GRID_SIZE = 10;
 
 export default function GameScreen() {
   const [inputMode, setInputMode] = useState<InputMode>("active");
-  const [cellStates, setCellStates] = useState<Map<string, CellState>>(new Map());
+  const [cellStates, setCellStates] = useState<Map<string, CellState>>(
+    new Map(),
+  );
 
-  const handleCellPress = useCallback((id: string) => {
-    setCellStates((prev) => {
-      const currentState = prev.get(id) ?? "blank";
+  const handleCellPress = useCallback(
+    (id: string) => {
+      setCellStates((prev) => {
+        const currentState = prev.get(id) ?? "blank";
 
-      if (currentState !== "blank") {
-        return prev;
-      }
+        if (currentState !== "blank") {
+          return prev;
+        }
 
-      const next = new Map(prev);
-      next.set(id, inputMode);
-      return next;
-    });
-  }, [inputMode]);
+        const next = new Map(prev);
+        next.set(id, inputMode);
+        return next;
+      });
+    },
+    [inputMode],
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -49,6 +54,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 16, // <-- Restores the 16px padding on left & right
-    paddingVertical: 24,   // Adds vertical breathing room for toggle & top area
+    paddingVertical: 24, // Adds vertical breathing room for toggle & top area
   },
 });

@@ -26,13 +26,13 @@ export function Grid({ gridSize, cellStates, onCellPress }: GridProps) {
         isThickBottom: (row + 1) % BLOCK_SIZE === 0 && row < gridSize - 1,
         isLastRow: row === gridSize - 1,
         isLastCol: col === gridSize - 1,
-      }))
+      })),
     );
   }, [gridSize]);
 
   const blockRows = useMemo(() => {
     return Array.from({ length: Math.ceil(gridSize / BLOCK_SIZE) }, (_, i) =>
-      gridRows.slice(i * BLOCK_SIZE, (i + 1) * BLOCK_SIZE)
+      gridRows.slice(i * BLOCK_SIZE, (i + 1) * BLOCK_SIZE),
     );
   }, [gridRows, gridSize]);
 
@@ -43,7 +43,10 @@ export function Grid({ gridSize, cellStates, onCellPress }: GridProps) {
           {blockRows.map((_, blockColIndex) => {
             const colStart = blockColIndex * BLOCK_SIZE;
             return (
-              <View key={`block-${blockRowIndex}-${blockColIndex}`} style={styles.block}>
+              <View
+                key={`block-${blockRowIndex}-${blockColIndex}`}
+                style={styles.block}
+              >
                 {blockRowGroup.map((row, rowIndex) => (
                   <View key={`row-${rowIndex}`} style={styles.row}>
                     {row.slice(colStart, colStart + BLOCK_SIZE).map((cell) => (

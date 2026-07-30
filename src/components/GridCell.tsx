@@ -12,37 +12,38 @@ export interface GridCellProps {
   onSelect: (id: string) => void;
 }
 
-const CellContent = memo(({ state, size }: { state: CellState; size: number }) => {
+const CellContent = memo(function CellContent({
+  state,
+  size,
+}: {
+  state: CellState;
+  size: number;
+}) {
   if (state === "unactive") {
     return <Feather name="x" size={size} color={Colors.active} />;
   }
   return null;
 });
 
-export const GridCell = memo(
-  ({
-    id,
-    state,
-    cellSize,
-    onSelect,
-  }: GridCellProps) => {
-    const isBlank = state === "blank";
-    const iconSize = Math.round(cellSize * 0.75);
+export const GridCell = memo(function GridCell({
+  id,
+  state,
+  cellSize,
+  onSelect,
+}: GridCellProps) {
+  const isBlank = state === "blank";
+  const iconSize = Math.round(cellSize * 0.75);
 
-    return (
-      <Pressable
-        onPress={() => onSelect(id)}
-        disabled={!isBlank}
-        style={[
-          styles.cell,
-          state === "active" && styles.activeCell,
-        ]}
-      >
-        <CellContent state={state} size={iconSize} />
-      </Pressable>
-    );
-  }
-);
+  return (
+    <Pressable
+      onPress={() => onSelect(id)}
+      disabled={!isBlank}
+      style={[styles.cell, state === "active" && styles.activeCell]}
+    >
+      <CellContent state={state} size={iconSize} />
+    </Pressable>
+  );
+});
 
 const styles = StyleSheet.create({
   cell: {
