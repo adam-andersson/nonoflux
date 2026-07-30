@@ -9,16 +9,12 @@ export interface GridCellProps {
   id: string;
   state: CellState;
   cellSize: number;
-  isThickRight: boolean;
-  isThickBottom: boolean;
-  isLastRow: boolean;
-  isLastCol: boolean;
   onSelect: (id: string) => void;
 }
 
 const CellContent = memo(({ state, size }: { state: CellState; size: number }) => {
   if (state === "unactive") {
-    return <Feather name="x" size={size} color={Colors.borderThick} />;
+    return <Feather name="x" size={size} color={Colors.active} />;
   }
   return null;
 });
@@ -28,10 +24,6 @@ export const GridCell = memo(
     id,
     state,
     cellSize,
-    isThickRight,
-    isThickBottom,
-    isLastRow,
-    isLastCol,
     onSelect,
   }: GridCellProps) => {
     const isBlank = state === "blank";
@@ -43,10 +35,6 @@ export const GridCell = memo(
         disabled={!isBlank}
         style={[
           styles.cell,
-          isThickRight && styles.thickRight,
-          isThickBottom && styles.thickBottom,
-          isLastRow && styles.noBottomBorder,
-          isLastCol && styles.noRightBorder,
           state === "active" && styles.activeCell,
         ]}
       >
@@ -62,24 +50,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     alignItems: "center",
     justifyContent: "center",
-    borderRightWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: Colors.border,
     backgroundColor: Colors.surface,
-  },
-  thickRight: {
-    borderRightWidth: 3,
-    borderRightColor: Colors.borderThick,
-  },
-  thickBottom: {
-    borderBottomWidth: 3,
-    borderBottomColor: Colors.borderThick,
-  },
-  noBottomBorder: {
-    borderBottomWidth: 0,
-  },
-  noRightBorder: {
-    borderRightWidth: 0,
   },
   activeCell: {
     backgroundColor: Colors.active,
