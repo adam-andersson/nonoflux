@@ -1,4 +1,4 @@
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/constants/colors";
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { memo } from "react";

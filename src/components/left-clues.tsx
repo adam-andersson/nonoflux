@@ -1,15 +1,10 @@
+import { GRID_CONFIG } from "@/constants/grid";
 import { useGridContext } from "@/store/grid-context";
 import { StyleSheet, View } from "react-native";
 
 export function LeftClues() {
-  const {
-    blocks,
-    boardDimension,
-    clueAreaDepth,
-    THICK_GAP,
-    THIN_GAP,
-    MARGIN_OFFSET,
-  } = useGridContext();
+  const { blocks, boardDimension, clueAreaDepth } = useGridContext();
+  const { THICK_GAP, THIN_GAP, MARGIN_OFFSET } = GRID_CONFIG;
 
   return (
     <View

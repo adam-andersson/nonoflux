@@ -1,18 +1,13 @@
 import { GridCell } from "@/components/grid-cell";
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/constants/colors";
+import { GRID_CONFIG } from "@/constants/grid";
 import { useGridContext } from "@/store/grid-context";
 import { StyleSheet, View } from "react-native";
 
 export function Board() {
-  const {
-    blocks,
-    boardDimension,
-    cellContentSize,
-    cellStates,
-    onCellPress,
-    THICK_GAP,
-    THIN_GAP,
-  } = useGridContext();
+  const { blocks, boardDimension, cellContentSize, cellStates, onCellPress } =
+    useGridContext();
+  const { THICK_GAP, THIN_GAP } = GRID_CONFIG;
 
   return (
     <View

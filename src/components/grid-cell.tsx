@@ -1,4 +1,4 @@
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/constants/colors";
 import { memo } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import { CellContent } from "./cell-content";

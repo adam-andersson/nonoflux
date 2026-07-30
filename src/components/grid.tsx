@@ -6,11 +6,9 @@ import { Board } from "./board";
 import { LeftClues } from "./left-clues";
 import { TopClues } from "./top-clues";
 
-const BLOCK_SIZE = 5;
-const CLUE_RATIO = 0.2;
-const THICK_GAP = 3;
-const THIN_GAP = 1;
-const MARGIN_OFFSET = 3;
+import { GRID_CONFIG } from "@/constants/grid";
+const { BLOCK_SIZE, CLUE_RATIO, THICK_GAP, THIN_GAP, MARGIN_OFFSET } =
+  GRID_CONFIG;
 
 interface GridProps {
   gridSize: number;

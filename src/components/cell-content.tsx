@@ -1,4 +1,4 @@
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/constants/colors";
 import { Feather } from "@expo/vector-icons";
 import { CellState } from "./grid-cell";
 

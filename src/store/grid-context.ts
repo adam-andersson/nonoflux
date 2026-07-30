@@ -9,10 +9,6 @@ interface GridContextType {
   cellContentSize: number;
   cellStates: Record<string, CellState>;
   onCellPress: (id: string) => void;
-  // Constants can be shared via context or a config file
-  THICK_GAP: number;
-  THIN_GAP: number;
-  MARGIN_OFFSET: number;
 }
 
 const GridContext = createContext<GridContextType | null>(null);
