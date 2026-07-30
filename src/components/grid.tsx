@@ -1,11 +1,13 @@
-import { CellState, GridCell } from "@/components/grid-cell";
-import { Colors } from "@/constants/Colors";
+import { CellState } from "@/components/grid-cell";
+import { GridProvider } from "@/store/grid-context";
 import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
+import { Board } from "./board";
+import { LeftClues } from "./left-clues";
+import { TopClues } from "./top-clues";
 
 const BLOCK_SIZE = 5;
-const CLUE_RATIO = 0.2; // Ratio of clue depth relative to the main board width
-
+const CLUE_RATIO = 0.2;
 const THICK_GAP = 3;
 const THIN_GAP = 1;
 const MARGIN_OFFSET = 3;
@@ -81,164 +83,36 @@ export function Grid({
     return blockArray;
   }, [gridMatrix, gridSize, numBlocks]);
 
+  const contextValue = {
+    gridSize,
+    blocks,
+    boardDimension,
+    clueAreaDepth,
+    cellContentSize,
+    cellStates,
+    onCellPress,
+    THICK_GAP,
+    THIN_GAP,
+    MARGIN_OFFSET,
+  };
+
   return (
-    <View style={[styles.container, { width: gridDimension }]}>
-      <View style={styles.horizontalRow}>
-        <View
-          style={[
-            styles.topCluesContainer,
-            { width: boardDimension, height: clueAreaDepth },
-          ]}
-        >
-          {blocks[0]?.map((block, bColIdx) => {
-            const colCount = block[0]?.length ?? 1;
-            return (
-              <View
-                key={`top-clue-block-${bColIdx}`}
-                style={[styles.topClueBlock, { flex: colCount }]}
-              >
-                {block[0]?.map((_, colIdx) => (
-                  <View
-                    key={`top-clue-cell-${bColIdx}-${colIdx}`}
-                    style={styles.topClueCell}
-                  />
-                ))}
-              </View>
-            );
-          })}
-        </View>
-      </View>
-
-      <View style={styles.horizontalRow}>
-        <View
-          style={[
-            styles.leftCluesContainer,
-            { width: clueAreaDepth, height: boardDimension },
-          ]}
-        >
-          {blocks.map((blockRow, bRowIdx) => {
-            const rowCount = blockRow[0]?.length ?? 1;
-            return (
-              <View
-                key={`left-clue-block-${bRowIdx}`}
-                style={[styles.leftClueBlock, { flex: rowCount }]}
-              >
-                {blockRow[0]?.map((_, rIdx) => (
-                  <View
-                    key={`left-clue-cell-${bRowIdx}-${rIdx}`}
-                    style={styles.leftClueCell}
-                  />
-                ))}
-              </View>
-            );
-          })}
+    <GridProvider value={contextValue}>
+      <View style={[styles.container, { width: gridDimension }]}>
+        <View style={styles.horizontalRow}>
+          <TopClues />
         </View>
 
-        <View
-          style={[
-            styles.board,
-            { width: boardDimension, height: boardDimension },
-          ]}
-        >
-          {blocks.map((blockRow, bRowIdx) => {
-            const rowCount = blockRow[0]?.length ?? 1;
-            return (
-              <View
-                key={`block-row-${bRowIdx}`}
-                style={[styles.blockRowBand, { flex: rowCount }]}
-              >
-                {blockRow.map((block, bColIdx) => {
-                  const colCount = block[0]?.length ?? 1;
-                  return (
-                    <View
-                      key={`block-${bRowIdx}-${bColIdx}`}
-                      style={[styles.block, { flex: colCount }]}
-                    >
-                      {block.map((row, rIdx) => (
-                        <View key={`row-${rIdx}`} style={styles.row}>
-                          {row.map((cellId) => (
-                            <GridCell
-                              key={cellId}
-                              id={cellId}
-                              cellContentSize={cellContentSize}
-                              state={cellStates[cellId] ?? "blank"}
-                              onSelect={onCellPress}
-                            />
-                          ))}
-                        </View>
-                      ))}
-                    </View>
-                  );
-                })}
-              </View>
-            );
-          })}
+        <View style={styles.horizontalRow}>
+          <LeftClues />
+          <Board />
         </View>
       </View>
-    </View>
+    </GridProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: "flex-end",
-  },
-  horizontalRow: {
-    flexDirection: "row",
-  },
-
-  topCluesContainer: {
-    flexDirection: "row",
-    gap: THICK_GAP,
-    paddingHorizontal: THICK_GAP,
-    marginBottom: MARGIN_OFFSET,
-  },
-  topClueBlock: {
-    flexDirection: "row",
-    gap: THIN_GAP,
-  },
-  topClueCell: {
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
-    backgroundColor: "lightgray",
-  },
-
-  leftCluesContainer: {
-    flexDirection: "column",
-    gap: THICK_GAP,
-    paddingVertical: THICK_GAP,
-    marginRight: MARGIN_OFFSET,
-  },
-  leftClueBlock: {
-    flexDirection: "column",
-    gap: THIN_GAP,
-  },
-  leftClueCell: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    backgroundColor: "lightgray",
-  },
-
-  board: {
-    borderWidth: THICK_GAP,
-    borderColor: Colors.borderThick, // outer thick borders
-    backgroundColor: Colors.borderThick, // inner thick borders
-    gap: THICK_GAP,
-  },
-  blockRowBand: {
-    flexDirection: "row",
-    gap: THICK_GAP,
-  },
-  block: {
-    backgroundColor: Colors.border, // inner thin borders
-    gap: THIN_GAP,
-  },
-  row: {
-    flex: 1,
-    flexDirection: "row",
-    gap: THIN_GAP,
-  },
+  container: { alignItems: "flex-end" },
+  horizontalRow: { flexDirection: "row" },
 });
