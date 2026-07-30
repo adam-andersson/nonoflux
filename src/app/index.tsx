@@ -1,54 +1,90 @@
-import { Grid } from "@/components/Grid";
-import { CellState } from "@/components/GridCell";
-import { InputMode, ModeToggle } from "@/components/ModeToggle";
+import { Grid } from "@/components/grid";
+import { CellState } from "@/components/grid-cell";
+import { InputMode, ModeToggle } from "@/components/mode-toggle";
 import { Colors } from "@/constants/Colors";
-import { useCallback, useState } from "react";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const GRID_SIZE = 10;
 
 export default function GameScreen() {
   const [inputMode, setInputMode] = useState<InputMode>("active");
-  const [cellStates, setCellStates] = useState<Map<string, CellState>>(new Map());
+  const [cellStates, setCellStates] = useState<Record<string, CellState>>({});
+
+  const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+
+  const inputModeRef = useRef(inputMode);
+  useEffect(() => {
+    inputModeRef.current = inputMode;
+  }, [inputMode]);
 
   const handleCellPress = useCallback((id: string) => {
     setCellStates((prev) => {
-      const currentState = prev.get(id) ?? "blank";
+      const currentState = prev[id] ?? "blank";
 
       if (currentState !== "blank") {
         return prev;
       }
 
-      const next = new Map(prev);
-      next.set(id, inputMode);
-      return next;
+      return {
+        ...prev,
+        [id]: inputModeRef.current,
+      };
     });
-  }, [inputMode]);
+  }, []);
+
+  const gridDimension = Math.min(width - 32, height * 0.5);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Grid
-          gridSize={GRID_SIZE}
-          cellStates={cellStates}
-          onCellPress={handleCellPress}
-        />
+    <View
+      style={[
+        styles.container,
+        {
+          paddingTop: Math.max(insets.top, 16),
+          paddingBottom: Math.max(insets.bottom, 16),
+          paddingLeft: Math.max(insets.left, 16),
+          paddingRight: Math.max(insets.right, 16),
+        },
+      ]}
+    >
+      <View style={[styles.gridContainer]}>
+        <View
+          style={[
+            styles.gridSquare,
+            { width: gridDimension, height: gridDimension },
+          ]}
+        >
+          <Grid
+            gridSize={GRID_SIZE}
+            gridDimension={gridDimension}
+            cellStates={cellStates}
+            onCellPress={handleCellPress}
+          />
+        </View>
+      </View>
+
+      <View>
         <ModeToggle mode={inputMode} onModeChange={setInputMode} />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: Colors.surface,
   },
-  content: {
+  gridContainer: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 16, // <-- Restores the 16px padding on left & right
-    paddingVertical: 24,   // Adds vertical breathing room for toggle & top area
+    alignItems: "center",
+  },
+  gridSquare: {
+    overflow: "hidden",
   },
 });
