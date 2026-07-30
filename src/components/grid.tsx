@@ -1,4 +1,4 @@
-import { CellState, GridCell } from "@/components/GridCell";
+import { CellState, GridCell } from "@/components/grid-cell";
 import { Colors } from "@/constants/Colors";
 import { useMemo } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";

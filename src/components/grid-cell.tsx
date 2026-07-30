@@ -1,7 +1,7 @@
 import { Colors } from "@/constants/Colors";
-import { Feather } from "@expo/vector-icons";
 import { memo } from "react";
 import { Pressable, StyleSheet } from "react-native";
+import { CellContent } from "./cell-content";
 
 export type CellState = "blank" | "active" | "unactive";
 
@@ -11,19 +11,6 @@ export interface GridCellProps {
   cellSize: number;
   onSelect: (id: string) => void;
 }
-
-const CellContent = memo(function CellContent({
-  state,
-  size,
-}: {
-  state: CellState;
-  size: number;
-}) {
-  if (state === "unactive") {
-    return <Feather name="x" size={size} color={Colors.active} />;
-  }
-  return null;
-});
 
 export const GridCell = memo(function GridCell({
   id,

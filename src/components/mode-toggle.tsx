@@ -3,7 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { memo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { CellState } from "./GridCell";
+import { CellState } from "./grid-cell";
 
 export type InputMode = Extract<CellState, "active" | "unactive">;
 

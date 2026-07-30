@@ -1,6 +1,6 @@
-import { Grid } from "@/components/Grid";
-import { CellState } from "@/components/GridCell";
-import { InputMode, ModeToggle } from "@/components/ModeToggle";
+import { Grid } from "@/components/grid";
+import { CellState } from "@/components/grid-cell";
+import { InputMode, ModeToggle } from "@/components/mode-toggle";
 import { Colors } from "@/constants/Colors";
 import { useCallback, useState } from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
