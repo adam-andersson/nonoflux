@@ -58,6 +58,7 @@ export default function GameScreen() {
         >
           <Grid
             gridSize={GRID_SIZE}
+            gridDimension={gridDimension}
             cellStates={cellStates}
             onCellPress={handleCellPress}
           />

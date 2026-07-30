@@ -7,17 +7,18 @@ export type CellState = "blank" | "active" | "unactive";
 
 export interface GridCellProps {
   id: string;
+  cellContentSize: number;
   state: CellState;
   onSelect: (id: string) => void;
 }
 
 export const GridCell = memo(function GridCell({
   id,
+  cellContentSize,
   state,
   onSelect,
 }: GridCellProps) {
   const isBlank = state === "blank";
-  const iconSize = Math.round(12 * 0.75);
 
   return (
     <Pressable
@@ -25,7 +26,7 @@ export const GridCell = memo(function GridCell({
       disabled={!isBlank}
       style={[styles.cell, state === "active" && styles.activeCell]}
     >
-      <CellContent state={state} size={iconSize} />
+      <CellContent state={state} size={cellContentSize} />
     </Pressable>
   );
 });

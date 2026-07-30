@@ -7,12 +7,30 @@ const BLOCK_SIZE = 5;
 
 interface GridProps {
   gridSize: number;
+  gridDimension: number;
   cellStates: Record<string, CellState>;
   onCellPress: (id: string) => void;
 }
 
-export function Grid({ gridSize, cellStates, onCellPress }: GridProps) {
+export function Grid({
+  gridSize,
+  gridDimension,
+  cellStates,
+  onCellPress,
+}: GridProps) {
   const numBlocks = Math.ceil(gridSize / BLOCK_SIZE);
+
+  const [, cellContentSize] = useMemo(() => {
+    const outerThickBorders = 3 * 2;
+    const innerThickBorders = (numBlocks - 1) * 3;
+    const innerBorders = (gridSize - numBlocks) * 1;
+
+    const availableWidth =
+      gridDimension - outerThickBorders - innerThickBorders - innerBorders;
+    const cellWidth = availableWidth / gridSize;
+    const cellContentSize = Math.round(cellWidth * 0.7);
+    return [cellWidth, cellContentSize];
+  }, [gridDimension, gridSize, numBlocks]);
 
   const gridMatrix = useMemo(() => {
     return Array.from({ length: gridSize }, (_, row) =>
@@ -57,6 +75,7 @@ export function Grid({ gridSize, cellStates, onCellPress }: GridProps) {
                     <GridCell
                       key={cellId}
                       id={cellId}
+                      cellContentSize={cellContentSize}
                       state={cellStates[cellId] ?? "blank"}
                       onSelect={onCellPress}
                     />
