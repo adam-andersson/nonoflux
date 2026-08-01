@@ -1,10 +1,12 @@
+import { Colors } from "@/constants/colors";
 import { GRID_CONFIG } from "@/constants/grid";
 import { useGridContext } from "@/store/grid-context";
 import { StyleSheet, View } from "react-native";
+import { LeftClue } from "./left-clue";
 
 export function LeftClues() {
   const { blocks, boardDimension, clueAreaDepth } = useGridContext();
-  const { THICK_GAP, THIN_GAP, MARGIN_OFFSET } = GRID_CONFIG;
+  const { THICK_GAP, THIN_GAP, MARGIN_OFFSET, BLOCK_SIZE } = GRID_CONFIG;
 
   return (
     <View
@@ -26,12 +28,18 @@ export function LeftClues() {
             key={`left-clue-block-${bRowIdx}`}
             style={[{ flex: rowCount, gap: THIN_GAP }, styles.block]}
           >
-            {blockRow[0]?.map((_, rIdx) => (
-              <View
-                key={`left-clue-cell-${bRowIdx}-${rIdx}`}
-                style={styles.cell}
-              />
-            ))}
+            {blockRow[0]?.map((_, rIdx) => {
+              const globalColIndex = bRowIdx * BLOCK_SIZE + rIdx;
+
+              return (
+                <View
+                  key={`left-clue-cell-${bRowIdx}-${rIdx}`}
+                  style={styles.cell}
+                >
+                  <LeftClue index={globalColIndex} />
+                </View>
+              );
+            })}
           </View>
         );
       })}
@@ -47,6 +55,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    backgroundColor: "lightgray",
+    backgroundColor: Colors.clue,
+    paddingRight: 4,
+    marginBlock: 5,
+    borderRadius: 4,
   },
 });

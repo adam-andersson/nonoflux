@@ -1,10 +1,12 @@
+import { Colors } from "@/constants/colors";
 import { GRID_CONFIG } from "@/constants/grid";
 import { useGridContext } from "@/store/grid-context";
 import { StyleSheet, View } from "react-native";
+import { TopClue } from "./top-clue";
 
 export function TopClues() {
   const { blocks, boardDimension, clueAreaDepth } = useGridContext();
-  const { THICK_GAP, THIN_GAP, MARGIN_OFFSET } = GRID_CONFIG;
+  const { THICK_GAP, THIN_GAP, MARGIN_OFFSET, BLOCK_SIZE } = GRID_CONFIG;
 
   return (
     <View
@@ -26,12 +28,18 @@ export function TopClues() {
             key={`top-clue-block-${bColIdx}`}
             style={[{ flex: colCount, gap: THIN_GAP }, styles.block]}
           >
-            {block[0]?.map((_, colIdx) => (
-              <View
-                key={`top-clue-cell-${bColIdx}-${colIdx}`}
-                style={styles.cell}
-              />
-            ))}
+            {block[0]?.map((_, colIdx) => {
+              const globalColIndex = bColIdx * BLOCK_SIZE + colIdx;
+
+              return (
+                <View
+                  key={`top-clue-cell-${bColIdx}-${colIdx}`}
+                  style={styles.cell}
+                >
+                  <TopClue index={globalColIndex} />
+                </View>
+              );
+            })}
           </View>
         );
       })}
@@ -46,6 +54,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
-    backgroundColor: "lightgray",
+    backgroundColor: Colors.clue,
+    paddingBottom: 4,
+    marginInline: 5,
+    borderRadius: 4,
   },
 });

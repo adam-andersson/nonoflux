@@ -18,6 +18,7 @@ export const Colors = {
   // light: {
   surface: Palette.slate[50],
   active: Palette.slate[700],
+  clue: Palette.slate[300],
   border: Palette.slate[400],
   borderThick: Palette.slate[900],
   // },
