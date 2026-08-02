@@ -1,14 +1,28 @@
 import { BOARD_CONFIG } from "@/constants/board";
 import { Colors } from "@/constants/colors";
 import { useBoardContext } from "@/store/board-context";
+import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
-import { TopClue } from "./top-clue";
+import { Clue } from "./clue";
+import { CellState } from "./grid-cell";
 
 const { GRID_SIZE, BLOCK_SIZE, THICK_GAP, THIN_GAP, MARGIN_OFFSET } =
   BOARD_CONFIG;
 
+function getColumn(cellLookup: Record<string, CellState>, column: number) {
+  return Array.from({ length: GRID_SIZE }).map(
+    (_, row) => cellLookup[`${row},${column}`],
+  );
+}
+
 export function TopClues() {
-  const { gridDimension, clueAreaDepth } = useBoardContext();
+  const { gridDimension, clueAreaDepth, cellStates } = useBoardContext();
+
+  const columns = useMemo(() => {
+    return Array.from({ length: GRID_SIZE }, (_, col) =>
+      getColumn(cellStates, col),
+    );
+  }, [cellStates]);
 
   return (
     <View
@@ -21,7 +35,7 @@ export function TopClues() {
         },
       ]}
     >
-      {Array.from({ length: GRID_SIZE }, (_, col) => {
+      {columns.map((columnState, col) => {
         const isLeftThick = col % BLOCK_SIZE === 0;
         const isRightThick = (col + 1) % BLOCK_SIZE === 0;
         const isFirst = col === 0;
@@ -42,7 +56,9 @@ export function TopClues() {
               },
             ]}
           >
-            <TopClue index={col} />
+            <View style={styles.clueStack}>
+              <Clue states={columnState} />
+            </View>
           </View>
         );
       })}
@@ -61,5 +77,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surfaceSubtle,
     paddingBottom: 4,
     borderRadius: 4,
+  },
+  clueStack: {
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 3,
   },
 });
