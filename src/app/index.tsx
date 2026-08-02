@@ -6,8 +6,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const GRID_SIZE = 10;
-
 export default function GameScreen() {
   const [inputMode, setInputMode] = useState<InputMode>("filled");
   const [cellStates, setCellStates] = useState<Record<string, CellState>>({});
@@ -54,7 +52,6 @@ export default function GameScreen() {
     >
       <View style={styles.gridContainer}>
         <Board
-          gridSize={GRID_SIZE}
           boardDimension={maxBoardDimension}
           cellStates={cellStates}
           onCellPress={handleCellPress}

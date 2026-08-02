@@ -4,19 +4,19 @@ import { Colors } from "@/constants/colors";
 import { useGridContext } from "@/store/grid-context";
 import { StyleSheet, View } from "react-native";
 
-const { BLOCK_SIZE, THICK_GAP, THIN_GAP } = BOARD_CONFIG;
+const { GRID_SIZE, BLOCK_SIZE, THICK_GAP, THIN_GAP } = BOARD_CONFIG;
 
 export function Grid() {
-  const { gridSize, gridDimension } = useGridContext();
+  const { gridDimension } = useGridContext();
 
   return (
     <View
       style={[styles.grid, { width: gridDimension, height: gridDimension }]}
     >
-      {Array.from({ length: gridSize }, (_, row) => {
+      {Array.from({ length: GRID_SIZE }, (_, row) => {
         return (
           <View key={`row-${row}`} style={styles.row}>
-            {Array.from({ length: gridSize }, (_, col) => {
+            {Array.from({ length: GRID_SIZE }, (_, col) => {
               const cellId = `${row},${col}`;
 
               const isTopThick = row % BLOCK_SIZE === 0;
@@ -39,7 +39,7 @@ export function Grid() {
                       : Colors.border,
 
                     borderRightWidth:
-                      col === gridSize - 1
+                      col === GRID_SIZE - 1
                         ? isRightThick
                           ? THICK_GAP
                           : THIN_GAP
@@ -47,7 +47,7 @@ export function Grid() {
                     borderRightColor: Colors.borderStrong,
 
                     borderBottomWidth:
-                      row === gridSize - 1
+                      row === GRID_SIZE - 1
                         ? isBottomThick
                           ? THICK_GAP
                           : THIN_GAP

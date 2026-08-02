@@ -8,27 +8,20 @@ import { LeftClues } from "./left-clues";
 import { TopClues } from "./top-clues";
 
 interface BoardProps {
-  gridSize: number;
   boardDimension: number;
   cellStates: Record<string, CellState>;
   onCellPress: (id: string) => void;
 }
 
-export function Board({
-  gridSize,
-  boardDimension,
-  cellStates,
-  onCellPress,
-}: BoardProps) {
-  const dimensions = useBoardDimensions(gridSize, boardDimension);
+export function Board({ boardDimension, cellStates, onCellPress }: BoardProps) {
+  const dimensions = useBoardDimensions(boardDimension);
   const contextValue = useMemo(
     () => ({
-      gridSize,
       ...dimensions,
       cellStates,
       onCellPress,
     }),
-    [gridSize, dimensions, cellStates, onCellPress],
+    [dimensions, cellStates, onCellPress],
   );
 
   return (

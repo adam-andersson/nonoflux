@@ -2,7 +2,6 @@ import { CellState } from "@/components/grid-cell";
 import { createContext, useContext } from "react";
 
 interface GridContextType {
-  gridSize: number;
   gridDimension: number;
   clueAreaDepth: number;
   cellContentSize: number;

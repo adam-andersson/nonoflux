@@ -4,10 +4,11 @@ import { useGridContext } from "@/store/grid-context";
 import { StyleSheet, View } from "react-native";
 import { LeftClue } from "./left-clue";
 
-const { BLOCK_SIZE, THICK_GAP, THIN_GAP, MARGIN_OFFSET } = BOARD_CONFIG;
+const { GRID_SIZE, BLOCK_SIZE, THICK_GAP, THIN_GAP, MARGIN_OFFSET } =
+  BOARD_CONFIG;
 
 export function LeftClues() {
-  const { gridSize, gridDimension, clueAreaDepth } = useGridContext();
+  const { gridDimension, clueAreaDepth } = useGridContext();
 
   return (
     <View
@@ -20,11 +21,11 @@ export function LeftClues() {
         },
       ]}
     >
-      {Array.from({ length: gridSize }, (_, row) => {
+      {Array.from({ length: GRID_SIZE }, (_, row) => {
         const isTopThick = row % BLOCK_SIZE === 0;
         const isBottomThick = (row + 1) % BLOCK_SIZE === 0;
         const isFirst = row === 0;
-        const isLast = row === gridSize - 1;
+        const isLast = row === GRID_SIZE - 1;
 
         return (
           <View

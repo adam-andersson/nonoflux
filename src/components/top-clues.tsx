@@ -4,10 +4,11 @@ import { useGridContext } from "@/store/grid-context";
 import { StyleSheet, View } from "react-native";
 import { TopClue } from "./top-clue";
 
-const { BLOCK_SIZE, THICK_GAP, THIN_GAP, MARGIN_OFFSET } = BOARD_CONFIG;
+const { GRID_SIZE, BLOCK_SIZE, THICK_GAP, THIN_GAP, MARGIN_OFFSET } =
+  BOARD_CONFIG;
 
 export function TopClues() {
-  const { gridSize, gridDimension, clueAreaDepth } = useGridContext();
+  const { gridDimension, clueAreaDepth } = useGridContext();
 
   return (
     <View
@@ -20,11 +21,11 @@ export function TopClues() {
         },
       ]}
     >
-      {Array.from({ length: gridSize }, (_, col) => {
+      {Array.from({ length: GRID_SIZE }, (_, col) => {
         const isLeftThick = col % BLOCK_SIZE === 0;
         const isRightThick = (col + 1) % BLOCK_SIZE === 0;
         const isFirst = col === 0;
-        const isLast = col === gridSize - 1;
+        const isLast = col === GRID_SIZE - 1;
 
         return (
           <View
