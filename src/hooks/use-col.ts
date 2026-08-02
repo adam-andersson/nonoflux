@@ -1,11 +1,11 @@
 import { BOARD_CONFIG } from "@/constants/board";
-import { useGridContext } from "@/store/grid-context";
+import { useBoardContext } from "@/store/board-context";
 import { useMemo } from "react";
 
 const { GRID_SIZE } = BOARD_CONFIG;
 
 export function useCol(col: number) {
-  const { cellStates } = useGridContext();
+  const { cellStates } = useBoardContext();
 
   return useMemo(() => {
     const colKeys = Array.from(

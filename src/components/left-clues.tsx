@@ -1,6 +1,6 @@
 import { BOARD_CONFIG } from "@/constants/board";
 import { Colors } from "@/constants/colors";
-import { useGridContext } from "@/store/grid-context";
+import { useBoardContext } from "@/store/board-context";
 import { StyleSheet, View } from "react-native";
 import { LeftClue } from "./left-clue";
 
@@ -8,7 +8,7 @@ const { GRID_SIZE, BLOCK_SIZE, THICK_GAP, THIN_GAP, MARGIN_OFFSET } =
   BOARD_CONFIG;
 
 export function LeftClues() {
-  const { gridDimension, clueAreaDepth } = useGridContext();
+  const { gridDimension, clueAreaDepth } = useBoardContext();
 
   return (
     <View

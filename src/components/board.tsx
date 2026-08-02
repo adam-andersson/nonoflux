@@ -1,6 +1,6 @@
 import { CellState } from "@/components/grid-cell";
 import { useBoardDimensions } from "@/hooks/use-board-dimensions";
-import { GridProvider } from "@/store/grid-context";
+import { BoardProvider } from "@/store/board-context";
 import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { Grid } from "./grid";
@@ -25,7 +25,7 @@ export function Board({ boardDimension, cellStates, onCellPress }: BoardProps) {
   );
 
   return (
-    <GridProvider value={contextValue}>
+    <BoardProvider value={contextValue}>
       <View style={[styles.container, { width: boardDimension }]}>
         <View style={styles.horizontalRow}>
           <TopClues />
@@ -36,7 +36,7 @@ export function Board({ boardDimension, cellStates, onCellPress }: BoardProps) {
           <Grid />
         </View>
       </View>
-    </GridProvider>
+    </BoardProvider>
   );
 }
 

@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/colors";
-import { useGridContext } from "@/store/grid-context";
+import { useBoardContext } from "@/store/board-context";
 import { memo } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import { CellContent } from "./cell-content";
@@ -12,7 +12,7 @@ export interface GridCellProps {
 
 export const GridCell = memo(function GridCell({ id }: GridCellProps) {
   const { cellStates, cellContentSize, singleCellSize, onCellPress } =
-    useGridContext();
+    useBoardContext();
 
   const state = cellStates[id];
 

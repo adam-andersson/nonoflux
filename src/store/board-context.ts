@@ -1,7 +1,7 @@
 import { CellState } from "@/components/grid-cell";
 import { createContext, useContext } from "react";
 
-interface GridContextType {
+interface BoardContextType {
   gridDimension: number;
   clueAreaDepth: number;
   cellContentSize: number;
@@ -10,14 +10,14 @@ interface GridContextType {
   onCellPress: (id: string) => void;
 }
 
-const GridContext = createContext<GridContextType | null>(null);
+const BoardContext = createContext<BoardContextType | null>(null);
 
-export const GridProvider = GridContext.Provider;
+export const BoardProvider = BoardContext.Provider;
 
-export function useGridContext() {
-  const context = useContext(GridContext);
+export function useBoardContext() {
+  const context = useContext(BoardContext);
   if (!context) {
-    throw new Error("Grid sub-components must be rendered inside <Board />");
+    throw new Error("Board sub-components must be rendered inside <Board />");
   }
   return context;
 }
