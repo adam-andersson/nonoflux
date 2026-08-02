@@ -4,13 +4,10 @@ import { useGridContext } from "@/store/grid-context";
 import { StyleSheet, View } from "react-native";
 import { LeftClue } from "./left-clue";
 
+const { BLOCK_SIZE, THICK_GAP, THIN_GAP, MARGIN_OFFSET } = BOARD_CONFIG;
+
 export function LeftClues() {
-  const {
-    blocks,
-    gridDimension: boardDimension,
-    clueAreaDepth,
-  } = useGridContext();
-  const { THICK_GAP, THIN_GAP, MARGIN_OFFSET, BLOCK_SIZE } = BOARD_CONFIG;
+  const { gridSize, gridDimension, clueAreaDepth } = useGridContext();
 
   return (
     <View
@@ -18,32 +15,33 @@ export function LeftClues() {
         styles.container,
         {
           width: clueAreaDepth,
-          height: boardDimension,
-          gap: THICK_GAP,
-          paddingVertical: THICK_GAP,
+          height: gridDimension,
           marginRight: MARGIN_OFFSET,
         },
       ]}
     >
-      {blocks.map((blockRow, bRowIdx) => {
-        const rowCount = blockRow[0]?.length ?? 1;
+      {Array.from({ length: gridSize }, (_, row) => {
+        const isTopThick = row % BLOCK_SIZE === 0;
+        const isBottomThick = (row + 1) % BLOCK_SIZE === 0;
+        const isFirst = row === 0;
+        const isLast = row === gridSize - 1;
+
         return (
           <View
-            key={`left-clue-block-${bRowIdx}`}
-            style={[{ flex: rowCount, gap: THIN_GAP }, styles.block]}
+            key={`left-clue-row-${row}`}
+            style={[
+              styles.cell,
+              {
+                marginTop: isTopThick ? THICK_GAP / 2 : THIN_GAP / 2,
+                marginBottom: isBottomThick ? THICK_GAP / 2 : THIN_GAP / 2,
+              },
+              {
+                ...(isFirst && { marginTop: THICK_GAP }),
+                ...(isLast && { marginBottom: THICK_GAP }),
+              },
+            ]}
           >
-            {blockRow[0]?.map((_, rIdx) => {
-              const globalColIndex = bRowIdx * BLOCK_SIZE + rIdx;
-
-              return (
-                <View
-                  key={`left-clue-cell-${bRowIdx}-${rIdx}`}
-                  style={styles.cell}
-                >
-                  <LeftClue index={globalColIndex} />
-                </View>
-              );
-            })}
+            <LeftClue index={row} />
           </View>
         );
       })}
@@ -52,8 +50,9 @@ export function LeftClues() {
 }
 
 const styles = StyleSheet.create({
-  container: { flexDirection: "column" },
-  block: { flexDirection: "column" },
+  container: {
+    flexDirection: "column",
+  },
   cell: {
     flex: 1,
     flexDirection: "row",
@@ -61,7 +60,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: Colors.surfaceSubtle,
     paddingRight: 4,
-    marginBlock: 5,
     borderRadius: 4,
   },
 });

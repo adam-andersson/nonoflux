@@ -4,58 +4,58 @@ import { Colors } from "@/constants/colors";
 import { useGridContext } from "@/store/grid-context";
 import { StyleSheet, View } from "react-native";
 
+const { BLOCK_SIZE, THICK_GAP, THIN_GAP } = BOARD_CONFIG;
+
 export function Grid() {
-  const {
-    blocks,
-    gridDimension: boardDimension,
-    cellContentSize,
-    cellStates,
-    onCellPress,
-  } = useGridContext();
-  const { THICK_GAP, THIN_GAP } = BOARD_CONFIG;
+  const { gridSize, gridDimension } = useGridContext();
 
   return (
     <View
-      style={[
-        styles.board,
-        {
-          width: boardDimension,
-          height: boardDimension,
-          borderWidth: THICK_GAP,
-          gap: THICK_GAP,
-        },
-      ]}
+      style={[styles.grid, { width: gridDimension, height: gridDimension }]}
     >
-      {blocks.map((blockRow, bRowIdx) => {
-        const rowCount = blockRow[0]?.length ?? 1;
+      {Array.from({ length: gridSize }, (_, row) => {
         return (
-          <View
-            key={`block-row-${bRowIdx}`}
-            style={[styles.blockRowBand, { flex: rowCount, gap: THICK_GAP }]}
-          >
-            {blockRow.map((block, bColIdx) => {
-              const colCount = block[0]?.length ?? 1;
+          <View key={`row-${row}`} style={styles.row}>
+            {Array.from({ length: gridSize }, (_, col) => {
+              const cellId = `${row},${col}`;
+
+              const isTopThick = row % BLOCK_SIZE === 0;
+              const isBottomThick = (row + 1) % BLOCK_SIZE === 0;
+              const isLeftThick = col % BLOCK_SIZE === 0;
+              const isRightThick = (col + 1) % BLOCK_SIZE === 0;
+
               return (
                 <View
-                  key={`block-${bRowIdx}-${bColIdx}`}
-                  style={[styles.block, { flex: colCount, gap: THIN_GAP }]}
+                  key={cellId}
+                  style={{
+                    borderTopWidth: isTopThick ? THICK_GAP : THIN_GAP,
+                    borderTopColor: isTopThick
+                      ? Colors.borderStrong
+                      : Colors.border,
+
+                    borderLeftWidth: isLeftThick ? THICK_GAP : THIN_GAP,
+                    borderLeftColor: isLeftThick
+                      ? Colors.borderStrong
+                      : Colors.border,
+
+                    borderRightWidth:
+                      col === gridSize - 1
+                        ? isRightThick
+                          ? THICK_GAP
+                          : THIN_GAP
+                        : 0,
+                    borderRightColor: Colors.borderStrong,
+
+                    borderBottomWidth:
+                      row === gridSize - 1
+                        ? isBottomThick
+                          ? THICK_GAP
+                          : THIN_GAP
+                        : 0,
+                    borderBottomColor: Colors.borderStrong,
+                  }}
                 >
-                  {block.map((row, rIdx) => (
-                    <View
-                      key={`row-${rIdx}`}
-                      style={[styles.row, { gap: THIN_GAP }]}
-                    >
-                      {row.map((cellId) => (
-                        <GridCell
-                          key={cellId}
-                          id={cellId}
-                          cellContentSize={cellContentSize}
-                          state={cellStates[cellId]}
-                          onSelect={onCellPress}
-                        />
-                      ))}
-                    </View>
-                  ))}
+                  <GridCell id={cellId} />
                 </View>
               );
             })}
@@ -67,11 +67,10 @@ export function Grid() {
 }
 
 const styles = StyleSheet.create({
-  board: {
-    borderColor: Colors.borderStrong,
-    backgroundColor: Colors.borderStrong,
+  grid: {
+    flexDirection: "column",
   },
-  blockRowBand: { flexDirection: "row" },
-  block: { backgroundColor: Colors.border },
-  row: { flex: 1, flexDirection: "row" },
+  row: {
+    flexDirection: "row",
+  },
 });

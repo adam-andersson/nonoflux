@@ -4,46 +4,44 @@ import { useGridContext } from "@/store/grid-context";
 import { StyleSheet, View } from "react-native";
 import { TopClue } from "./top-clue";
 
+const { BLOCK_SIZE, THICK_GAP, THIN_GAP, MARGIN_OFFSET } = BOARD_CONFIG;
+
 export function TopClues() {
-  const {
-    blocks,
-    gridDimension: boardDimension,
-    clueAreaDepth,
-  } = useGridContext();
-  const { THICK_GAP, THIN_GAP, MARGIN_OFFSET, BLOCK_SIZE } = BOARD_CONFIG;
+  const { gridSize, gridDimension, clueAreaDepth } = useGridContext();
 
   return (
     <View
       style={[
         styles.container,
         {
-          width: boardDimension,
+          width: gridDimension,
           height: clueAreaDepth,
-          gap: THICK_GAP,
-          paddingHorizontal: THICK_GAP,
           marginBottom: MARGIN_OFFSET,
         },
       ]}
     >
-      {blocks[0]?.map((block, bColIdx) => {
-        const colCount = block[0]?.length ?? 1;
+      {Array.from({ length: gridSize }, (_, col) => {
+        const isLeftThick = col % BLOCK_SIZE === 0;
+        const isRightThick = (col + 1) % BLOCK_SIZE === 0;
+        const isFirst = col === 0;
+        const isLast = col === gridSize - 1;
+
         return (
           <View
-            key={`top-clue-block-${bColIdx}`}
-            style={[{ flex: colCount, gap: THIN_GAP }, styles.block]}
+            key={`top-clue-col-${col}`}
+            style={[
+              styles.cell,
+              {
+                marginLeft: isLeftThick ? THICK_GAP / 2 : THIN_GAP / 2,
+                marginRight: isRightThick ? THICK_GAP / 2 : THIN_GAP / 2,
+              },
+              {
+                ...(isFirst && { marginLeft: THICK_GAP }),
+                ...(isLast && { marginRight: THICK_GAP }),
+              },
+            ]}
           >
-            {block[0]?.map((_, colIdx) => {
-              const globalColIndex = bColIdx * BLOCK_SIZE + colIdx;
-
-              return (
-                <View
-                  key={`top-clue-cell-${bColIdx}-${colIdx}`}
-                  style={styles.cell}
-                >
-                  <TopClue index={globalColIndex} />
-                </View>
-              );
-            })}
+            <TopClue index={col} />
           </View>
         );
       })}
@@ -52,15 +50,15 @@ export function TopClues() {
 }
 
 const styles = StyleSheet.create({
-  container: { flexDirection: "row" },
-  block: { flexDirection: "row" },
+  container: {
+    flexDirection: "row",
+  },
   cell: {
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
     backgroundColor: Colors.surfaceSubtle,
     paddingBottom: 4,
-    marginInline: 5,
     borderRadius: 4,
   },
 });

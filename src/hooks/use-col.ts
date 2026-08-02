@@ -1,19 +1,16 @@
-import { BOARD_CONFIG } from "@/constants/board";
 import { useGridContext } from "@/store/grid-context";
+import { useMemo } from "react";
 
 export function useCol(col: number) {
-  const { blocks, cellStates } = useGridContext();
-  const { BLOCK_SIZE } = BOARD_CONFIG;
+  const { gridSize, cellStates } = useGridContext();
 
-  const blockWithCol = Math.floor(col / BLOCK_SIZE);
-  const subCol = col % BLOCK_SIZE;
+  return useMemo(() => {
+    const colKeys = Array.from(
+      { length: gridSize },
+      (_, row) => `${row},${col}`,
+    );
+    const colVals = colKeys.map((key) => cellStates[key] ?? null);
 
-  const colKeys = blocks.flatMap((blockRow) => {
-    const block = blockRow[blockWithCol];
-    return block.map((blockSubRow) => blockSubRow[subCol]);
-  });
-
-  const colVals = colKeys.map((r) => cellStates[r]);
-
-  return { k: colKeys, v: colVals };
+    return { k: colKeys, v: colVals };
+  }, [gridSize, col, cellStates]);
 }
