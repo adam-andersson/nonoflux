@@ -1,13 +1,14 @@
+// board-context.tsx
 import { CellState } from "@/components/grid-cell";
 import { createContext, useContext } from "react";
 
-interface BoardContextType {
+export interface BoardContextType {
   gridDimension: number;
   clueAreaDepth: number;
   cellContentSize: number;
   singleCellSize: number;
-  cellStates: Record<string, CellState>;
-  onCellPress: (id: string) => void;
+  grid: CellState[][];
+  onCellPress: (col: number, row: number) => void;
 }
 
 const BoardContext = createContext<BoardContextType | null>(null);

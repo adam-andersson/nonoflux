@@ -7,18 +7,19 @@ import { CellContent } from "./cell-content";
 export type CellState = "filled" | "crossed" | null;
 
 export interface GridCellProps {
-  id: string;
+  row: number;
+  col: number;
 }
 
-export const GridCell = memo(function GridCell({ id }: GridCellProps) {
-  const { cellStates, cellContentSize, singleCellSize, onCellPress } =
+export const GridCell = memo(function GridCell({ row, col }: GridCellProps) {
+  const { grid, cellContentSize, singleCellSize, onCellPress } =
     useBoardContext();
 
-  const state = cellStates[id];
+  const state = grid[row][col];
 
   return (
     <Pressable
-      onPress={() => onCellPress(id)}
+      onPress={() => onCellPress(col, row)}
       disabled={!!state}
       style={[
         styles.cell,

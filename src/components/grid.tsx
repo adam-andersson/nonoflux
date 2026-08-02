@@ -55,7 +55,7 @@ export function Grid() {
                     borderBottomColor: Colors.borderStrong,
                   }}
                 >
-                  <GridCell id={cellId} />
+                  <GridCell row={row} col={col} />
                 </View>
               );
             })}
