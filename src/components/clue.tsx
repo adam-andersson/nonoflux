@@ -17,17 +17,14 @@ export function Clue({ states }: ClueProps) {
       count = 0;
     }
   }
-  if (count > 0) {
-    result.push(count);
-  } else {
-    if (result.length === 0) {
-      result.push(count);
-    }
-  }
+
+  if (count > 0) result.push(count);
+
+  const clues = result.length > 0 ? result : [0];
 
   return (
     <>
-      {result.map((clue, i) => (
+      {clues.map((clue, i) => (
         <Text key={`${i}-${clue}`}>{clue}</Text>
       ))}
     </>

@@ -1,5 +1,4 @@
 import { Colors } from "@/constants/colors";
-import { useBoardContext } from "@/store/board-context";
 import { memo } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import { CellContent } from "./cell-content";
@@ -9,17 +8,23 @@ export type CellState = "filled" | "crossed" | null;
 export interface GridCellProps {
   row: number;
   col: number;
+  state: CellState;
+  singleCellSize: number;
+  cellContentSize: number;
+  onPress: (col: number, row: number) => void;
 }
 
-export const GridCell = memo(function GridCell({ row, col }: GridCellProps) {
-  const { grid, cellContentSize, singleCellSize, onCellPress } =
-    useBoardContext();
-
-  const state = grid[row][col];
-
+export const GridCell = memo(function GridCell({
+  row,
+  col,
+  state,
+  singleCellSize,
+  cellContentSize,
+  onPress,
+}: GridCellProps) {
   return (
     <Pressable
-      onPress={() => onCellPress(col, row)}
+      onPress={() => onPress(col, row)}
       disabled={!!state}
       style={[
         styles.cell,
