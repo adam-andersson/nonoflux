@@ -1,4 +1,4 @@
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/constants/colors";
 import { Feather } from "@expo/vector-icons";
 import { CellState } from "./grid-cell";
 
@@ -8,8 +8,8 @@ interface CellContentProps {
 }
 
 export function CellContent({ state, size }: CellContentProps) {
-  if (state === "unactive") {
-    return <Feather name="x" size={size} color={Colors.active} />;
+  if (state === "crossed") {
+    return <Feather name="x" size={size} color={Colors.surfaceActive} />;
   }
   return null;
 }

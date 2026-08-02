@@ -1,41 +1,20 @@
-import { Grid } from "@/components/grid";
-import { CellState } from "@/components/grid-cell";
+import { Board } from "@/components/board";
 import { InputMode, ModeToggle } from "@/components/mode-toggle";
-import { Colors } from "@/constants/Colors";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Colors } from "@/constants/colors";
+import { useState } from "react";
 import { StyleSheet, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const GRID_SIZE = 10;
-
 export default function GameScreen() {
-  const [inputMode, setInputMode] = useState<InputMode>("active");
-  const [cellStates, setCellStates] = useState<Record<string, CellState>>({});
+  const [inputMode, setInputMode] = useState<InputMode>("filled");
 
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
-  const inputModeRef = useRef(inputMode);
-  useEffect(() => {
-    inputModeRef.current = inputMode;
-  }, [inputMode]);
-
-  const handleCellPress = useCallback((id: string) => {
-    setCellStates((prev) => {
-      const currentState = prev[id] ?? "blank";
-
-      if (currentState !== "blank") {
-        return prev;
-      }
-
-      return {
-        ...prev,
-        [id]: inputModeRef.current,
-      };
-    });
-  }, []);
-
-  const gridDimension = Math.min(width - 32, height * 0.5);
+  const maxBoardDimension = Math.min(
+    width - 32 - insets.left - insets.right,
+    height * 0.55,
+  );
 
   return (
     <View
@@ -49,20 +28,8 @@ export default function GameScreen() {
         },
       ]}
     >
-      <View style={[styles.gridContainer]}>
-        <View
-          style={[
-            styles.gridSquare,
-            { width: gridDimension, height: gridDimension },
-          ]}
-        >
-          <Grid
-            gridSize={GRID_SIZE}
-            gridDimension={gridDimension}
-            cellStates={cellStates}
-            onCellPress={handleCellPress}
-          />
-        </View>
+      <View style={styles.gridContainer}>
+        <Board boardDimension={maxBoardDimension} inputMode={inputMode} />
       </View>
 
       <View>
@@ -83,8 +50,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  gridSquare: {
-    overflow: "hidden",
   },
 });

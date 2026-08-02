@@ -15,15 +15,9 @@ export const Palette = {
 } as const;
 
 export const Colors = {
-  // light: {
   surface: Palette.slate[50],
-  active: Palette.slate[700],
+  surfaceActive: Palette.slate[700],
+  surfaceSubtle: Palette.slate[300],
   border: Palette.slate[400],
-  borderThick: Palette.slate[900],
-  // },
-  // dark: {
-  //   background: Palette.slate[950],
-  //   surface: Palette.slate[900],
-  //   borderThick: Palette.slate[300],
-  // },
+  borderStrong: Palette.slate[900],
 } as const;

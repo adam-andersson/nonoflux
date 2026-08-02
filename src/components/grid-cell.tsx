@@ -1,30 +1,36 @@
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/constants/colors";
 import { memo } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import { CellContent } from "./cell-content";
 
-export type CellState = "blank" | "active" | "unactive";
+export type CellState = "filled" | "crossed" | null;
 
 export interface GridCellProps {
-  id: string;
-  cellContentSize: number;
+  row: number;
+  col: number;
   state: CellState;
-  onSelect: (id: string) => void;
+  singleCellSize: number;
+  cellContentSize: number;
+  onPress: (col: number, row: number) => void;
 }
 
 export const GridCell = memo(function GridCell({
-  id,
-  cellContentSize,
+  row,
+  col,
   state,
-  onSelect,
+  singleCellSize,
+  cellContentSize,
+  onPress,
 }: GridCellProps) {
-  const isBlank = state === "blank";
-
   return (
     <Pressable
-      onPress={() => onSelect(id)}
-      disabled={!isBlank}
-      style={[styles.cell, state === "active" && styles.activeCell]}
+      onPress={() => onPress(col, row)}
+      disabled={!!state}
+      style={[
+        styles.cell,
+        { width: singleCellSize, height: singleCellSize },
+        state === "filled" && styles.filledCell,
+      ]}
     >
       <CellContent state={state} size={cellContentSize} />
     </Pressable>
@@ -33,13 +39,11 @@ export const GridCell = memo(function GridCell({
 
 const styles = StyleSheet.create({
   cell: {
-    flex: 1,
-    aspectRatio: 1,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.surface,
   },
-  activeCell: {
-    backgroundColor: Colors.active,
+  filledCell: {
+    backgroundColor: Colors.surfaceActive,
   },
 });
