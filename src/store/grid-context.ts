@@ -4,7 +4,7 @@ import { createContext, useContext } from "react";
 interface GridContextType {
   gridSize: number;
   blocks: string[][][][];
-  boardDimension: number;
+  gridDimension: number;
   clueAreaDepth: number;
   cellContentSize: number;
   cellStates: Record<string, CellState>;

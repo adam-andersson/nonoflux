@@ -1,4 +1,4 @@
-import { Grid } from "@/components/grid";
+import { Board } from "@/components/board";
 import { CellState } from "@/components/grid-cell";
 import { InputMode, ModeToggle } from "@/components/mode-toggle";
 import { Colors } from "@/constants/colors";
@@ -9,7 +9,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const GRID_SIZE = 10;
 
 export default function GameScreen() {
-  const [inputMode, setInputMode] = useState<InputMode>("active");
+  const [inputMode, setInputMode] = useState<InputMode>("filled");
   const [cellStates, setCellStates] = useState<Record<string, CellState>>({});
 
   const { width, height } = useWindowDimensions();
@@ -22,9 +22,9 @@ export default function GameScreen() {
 
   const handleCellPress = useCallback((id: string) => {
     setCellStates((prev) => {
-      const currentState = prev[id] ?? "blank";
+      const currentState = prev[id];
 
-      if (currentState !== "blank") {
+      if (!!currentState) {
         return prev;
       }
 
@@ -35,7 +35,7 @@ export default function GameScreen() {
     });
   }, []);
 
-  const maxNonoDimension = Math.min(
+  const maxBoardDimension = Math.min(
     width - 32 - insets.left - insets.right,
     height * 0.55,
   );
@@ -53,9 +53,9 @@ export default function GameScreen() {
       ]}
     >
       <View style={styles.gridContainer}>
-        <Grid
+        <Board
           gridSize={GRID_SIZE}
-          gridDimension={maxNonoDimension}
+          boardDimension={maxBoardDimension}
           cellStates={cellStates}
           onCellPress={handleCellPress}
         />

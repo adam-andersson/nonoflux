@@ -1,4 +1,4 @@
-export const GRID_CONFIG = {
+export const BOARD_CONFIG = {
   BLOCK_SIZE: 5,
   CLUE_RATIO: 0.2,
   THICK_GAP: 3,

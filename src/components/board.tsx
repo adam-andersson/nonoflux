@@ -1,72 +1,116 @@
-import { GridCell } from "@/components/grid-cell";
-import { Colors } from "@/constants/colors";
-import { GRID_CONFIG } from "@/constants/grid";
-import { useGridContext } from "@/store/grid-context";
+import { CellState } from "@/components/grid-cell";
+import { GridProvider } from "@/store/grid-context";
+import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
+import { Grid } from "./grid";
+import { LeftClues } from "./left-clues";
+import { TopClues } from "./top-clues";
 
-export function Board() {
-  const { blocks, boardDimension, cellContentSize, cellStates, onCellPress } =
-    useGridContext();
-  const { THICK_GAP, THIN_GAP } = GRID_CONFIG;
+import { BOARD_CONFIG } from "@/constants/board";
+const { BLOCK_SIZE, CLUE_RATIO, THICK_GAP, THIN_GAP, MARGIN_OFFSET } =
+  BOARD_CONFIG;
+
+interface BoardProps {
+  gridSize: number;
+  boardDimension: number;
+  cellStates: Record<string, CellState>;
+  onCellPress: (id: string) => void;
+}
+
+export function Board({
+  gridSize,
+  boardDimension,
+  cellStates,
+  onCellPress,
+}: BoardProps) {
+  const numBlocks = Math.ceil(gridSize / BLOCK_SIZE);
+
+  const { gridDimension, clueAreaDepth, cellContentSize } = useMemo(() => {
+    const outerThickBorders = THICK_GAP * 2;
+    const innerThickBorders = (numBlocks - 1) * THICK_GAP;
+    const innerBorders = (gridSize - numBlocks) * THIN_GAP;
+    const totalBoardBorders =
+      outerThickBorders + innerThickBorders + innerBorders;
+
+    const availableSpace = boardDimension - MARGIN_OFFSET;
+
+    const totalCellUnits = gridSize * (1 + CLUE_RATIO);
+    const singleCellSize =
+      (availableSpace - totalBoardBorders) / totalCellUnits;
+
+    const gridDimension = gridSize * singleCellSize + totalBoardBorders;
+    const clueAreaDepth = gridSize * singleCellSize * CLUE_RATIO;
+    const cellContentSize = Math.round(singleCellSize * 0.7);
+
+    return {
+      singleCellSize,
+      gridDimension,
+      clueAreaDepth,
+      cellContentSize,
+    };
+  }, [boardDimension, gridSize, numBlocks]);
+
+  const gridMatrix = useMemo(() => {
+    return Array.from({ length: gridSize }, (_, row) =>
+      Array.from({ length: gridSize }, (_, col) => `${row},${col}`),
+    );
+  }, [gridSize]);
+
+  const blocks = useMemo(() => {
+    const blockArray = [];
+    for (let bRow = 0; bRow < numBlocks; bRow++) {
+      const rowGroup = [];
+      for (let bCol = 0; bCol < numBlocks; bCol++) {
+        const blockCells = [];
+        for (let r = 0; r < BLOCK_SIZE; r++) {
+          const actualRow = bRow * BLOCK_SIZE + r;
+          if (actualRow >= gridSize) break;
+
+          const rowCells = [];
+          for (let c = 0; c < BLOCK_SIZE; c++) {
+            const actualCol = bCol * BLOCK_SIZE + c;
+            if (actualCol >= gridSize) break;
+            rowCells.push(gridMatrix[actualRow][actualCol]);
+          }
+          blockCells.push(rowCells);
+        }
+        rowGroup.push(blockCells);
+      }
+      blockArray.push(rowGroup);
+    }
+    return blockArray;
+  }, [gridMatrix, gridSize, numBlocks]);
+
+  const contextValue = {
+    gridSize,
+    blocks,
+    gridDimension,
+    clueAreaDepth,
+    cellContentSize,
+    cellStates,
+    onCellPress,
+    THICK_GAP,
+    THIN_GAP,
+    MARGIN_OFFSET,
+  };
 
   return (
-    <View
-      style={[
-        styles.board,
-        {
-          width: boardDimension,
-          height: boardDimension,
-          borderWidth: THICK_GAP,
-          gap: THICK_GAP,
-        },
-      ]}
-    >
-      {blocks.map((blockRow, bRowIdx) => {
-        const rowCount = blockRow[0]?.length ?? 1;
-        return (
-          <View
-            key={`block-row-${bRowIdx}`}
-            style={[styles.blockRowBand, { flex: rowCount, gap: THICK_GAP }]}
-          >
-            {blockRow.map((block, bColIdx) => {
-              const colCount = block[0]?.length ?? 1;
-              return (
-                <View
-                  key={`block-${bRowIdx}-${bColIdx}`}
-                  style={[styles.block, { flex: colCount, gap: THIN_GAP }]}
-                >
-                  {block.map((row, rIdx) => (
-                    <View
-                      key={`row-${rIdx}`}
-                      style={[styles.row, { gap: THIN_GAP }]}
-                    >
-                      {row.map((cellId) => (
-                        <GridCell
-                          key={cellId}
-                          id={cellId}
-                          cellContentSize={cellContentSize}
-                          state={cellStates[cellId] ?? "blank"}
-                          onSelect={onCellPress}
-                        />
-                      ))}
-                    </View>
-                  ))}
-                </View>
-              );
-            })}
-          </View>
-        );
-      })}
-    </View>
+    <GridProvider value={contextValue}>
+      <View style={[styles.container, { width: boardDimension }]}>
+        <View style={styles.horizontalRow}>
+          <TopClues />
+        </View>
+
+        <View style={styles.horizontalRow}>
+          <LeftClues />
+          <Grid />
+        </View>
+      </View>
+    </GridProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  board: {
-    borderColor: Colors.borderThick,
-    backgroundColor: Colors.borderThick,
-  },
-  blockRowBand: { flexDirection: "row" },
-  block: { backgroundColor: Colors.border },
-  row: { flex: 1, flexDirection: "row" },
+  container: { alignItems: "flex-end" },
+  horizontalRow: { flexDirection: "row" },
 });

@@ -10,7 +10,7 @@ export function Clue({ states }: ClueProps) {
   let count = 0;
 
   for (const item of states) {
-    if (item === "active") {
+    if (item === "filled") {
       count++;
     } else if (count > 0) {
       result.push(count);

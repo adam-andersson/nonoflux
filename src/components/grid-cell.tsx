@@ -3,7 +3,7 @@ import { memo } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import { CellContent } from "./cell-content";
 
-export type CellState = "blank" | "active" | "unactive";
+export type CellState = "filled" | "crossed" | null;
 
 export interface GridCellProps {
   id: string;
@@ -18,13 +18,11 @@ export const GridCell = memo(function GridCell({
   state,
   onSelect,
 }: GridCellProps) {
-  const isBlank = state === "blank";
-
   return (
     <Pressable
       onPress={() => onSelect(id)}
-      disabled={!isBlank}
-      style={[styles.cell, state === "active" && styles.activeCell]}
+      disabled={!!state}
+      style={[styles.cell, state === "filled" && styles.filledCell]}
     >
       <CellContent state={state} size={cellContentSize} />
     </Pressable>
@@ -39,7 +37,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: Colors.surface,
   },
-  activeCell: {
-    backgroundColor: Colors.active,
+  filledCell: {
+    backgroundColor: Colors.surfaceActive,
   },
 });

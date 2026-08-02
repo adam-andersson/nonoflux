@@ -5,7 +5,7 @@ import { memo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { CellState } from "./grid-cell";
 
-export type InputMode = Extract<CellState, "active" | "unactive">;
+export type InputMode = Extract<CellState, "filled" | "crossed">;
 
 interface ModeToggleProps {
   mode: InputMode;
@@ -26,25 +26,25 @@ export const ModeToggle = memo(function ModeToggle({
   return (
     <View style={styles.container}>
       <Pressable
-        onPress={() => handleSelect("active")}
-        style={[styles.button, mode === "active" && styles.activeButton]}
+        onPress={() => handleSelect("filled")}
+        style={[styles.button, mode === "filled" && styles.activeButton]}
       >
         <View style={styles.fillIcon} />
-        <Text style={[styles.text, mode === "active" && styles.activeText]}>
+        <Text style={[styles.text, mode === "filled" && styles.activeText]}>
           Fill
         </Text>
       </Pressable>
 
       <Pressable
-        onPress={() => handleSelect("unactive")}
-        style={[styles.button, mode === "unactive" && styles.activeButton]}
+        onPress={() => handleSelect("crossed")}
+        style={[styles.button, mode === "crossed" && styles.activeButton]}
       >
         <Feather
           name="x"
           size={18}
-          color={mode === "unactive" ? Colors.surface : Colors.borderThick}
+          color={mode === "crossed" ? Colors.surface : Colors.borderStrong}
         />
-        <Text style={[styles.text, mode === "unactive" && styles.activeText]}>
+        <Text style={[styles.text, mode === "crossed" && styles.activeText]}>
           Cross
         </Text>
       </Pressable>
@@ -73,12 +73,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   activeButton: {
-    backgroundColor: Colors.borderThick,
+    backgroundColor: Colors.borderStrong,
   },
   text: {
     fontSize: 14,
     fontWeight: "600",
-    color: Colors.borderThick,
+    color: Colors.borderStrong,
   },
   activeText: {
     color: Colors.surface,
@@ -87,6 +87,6 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 3,
-    backgroundColor: Colors.active,
+    backgroundColor: Colors.surfaceActive,
   },
 });

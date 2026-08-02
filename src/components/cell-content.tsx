@@ -8,8 +8,8 @@ interface CellContentProps {
 }
 
 export function CellContent({ state, size }: CellContentProps) {
-  if (state === "unactive") {
-    return <Feather name="x" size={size} color={Colors.active} />;
+  if (state === "crossed") {
+    return <Feather name="x" size={size} color={Colors.surfaceActive} />;
   }
   return null;
 }
